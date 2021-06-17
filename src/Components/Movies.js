@@ -3,27 +3,29 @@ import axios from 'axios'
 
 
 class Movies extends Component {
-    constructor(props)
-    {
+    constructor(props) {
         super(props)
-        this.state={
-            movies:[]
+        this.state = {
+            movies: []
 
         }
     }
-    componentDidMount(){
-        axios.get('https://localhost:44329/api/Movies/').then(response=>{
+    
+    componentDidMount() {
+        axios.get('https://localhost:44329/api/Movies/').then(response => {
             this.setState({
-                movies:response.data
+                movies: response.data
             })
             console.log(response.data)
         })
     }
     render() {
-        const {movies}=this.state
+        const { movies } = this.state
         return (
             <div><h1>Movies</h1>
-        {    movies.map((movie)=><div key={movie.id}>{movie.title}</div>)} 
+                {
+                    movies.map((movie) => <div key={movie.id}>{movie.title}</div>)
+                }
             </div>
         )
     }
