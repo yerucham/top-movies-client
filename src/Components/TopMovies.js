@@ -1,55 +1,43 @@
-import React,{useState,useEffect}from "react";    
-import axios from "axios";
-import {Link} from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link } from 'react-router-dom';
+import Api from '../Utilities/Api'
 
-const TopMovies=()=> {
- const [movies,setMovie]=useState([]);
-useEffect(()=>{
-    loadMovies();
-},[]);
+const TopMovies = () => {
+    const [movies, setMovie] = useState([]);
 
-const loadMovies= async ()=>
-{
-    const result=await  axios.get('https://localhost:44329/api/Movies/');
-    console.log(result.data);
-    setMovie(result.data);
-    
-}
-return(
-  <div className="container">
-  <h1>Movies List</h1>
-  <table className="table table-bordered">
-  <thead >
-    <tr>
-        <th scop="col"></th>
-        <th scop="col">Title</th>
-        <th scop="col">Category</th>
-        <th scop="col">rating</th>
-        <th>Action</th>
-        </tr>
-  </thead>
- 
-  <tbody>
-   {
-       movies.map((movie,index)=>(
-           <tr key={index}> 
-               <th scope="row">{index+1}</th>
-               <td>{movie.title}</td>
-               <td>{movie.category}</td>
-               <td>{movie.rating}</td>
-               <td><img src={movie.imgUrl}></img>{movie.rating}</td>
-               <td>
-                   <Link className="btn btn-primary mr-2"to="/movies/add">View</Link>
-                   <Link className="btn btn-outline-primary mr-2"to="/movies/add">Edit</Link> 
-                   <Link className="btn btn-danger"to="/movies/add">Delete</Link> 
-               </td>
-           </tr>
-       ))
-   }
-  </tbody>
-</table>
-<Link className="btn btn-outline-primary"to="/movies/add">Add Movie</Link>
-  </div>
-);
+    useEffect(() => {
+        loadMovies();
+    }, []);
+
+    const loadMovies = async () => {
+        const result = await Api.getAllMovies();
+        setMovie(result.data);
+    }
+    const deleteMovie = async (id) => {
+        await Api.deleteMovie(id);
+        loadMovies();
+    }
+    return (
+        <div className="container">
+            <br></br>
+            <ul id="movieslist">
+                {
+                    movies.map((movie, index) => (
+                        <div className="movie-card">
+                            <li >
+                                <h4>{index + 1}</h4>
+                                <h3>{movie.title}</h3><p><img className="movieImg" src={movie.imgUrl} alt={`${movie.title}`} width="220" height="220" /></p>
+                                <p> <Link className="btn btn-primary mr-2" to={`/movies/details/${movie.id}`}>View</Link>
+                                    <Link className="btn btn-outline-primary mr-2" to={`/movies/edit/${movie.id}`}>Edit</Link>
+                                    <button className="btn btn-danger" onClick={() => deleteMovie(movie.id)}>Delete</button>
+                                </p>
+                            </li>
+                        </div>
+                    ))
+                }
+            </ul>
+
+        </div>
+    );
 }
 export default TopMovies;
